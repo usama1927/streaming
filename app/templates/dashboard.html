@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Uploads – InstaClone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/css/style.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-light">
+
+<!-- ✅ Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">📸 InstaClone</a>
+    <div class="ms-auto">
+      <a href="/upload" class="btn btn-sm btn-outline-success me-2">Upload</a>
+      <button id="logoutBtn" class="btn btn-sm btn-outline-danger">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ✅ Upload Gallery -->
+<div class="container mt-4">
+  <h2 class="mb-4">📁 My Uploaded Videos</h2>
+  <div class="row" id="myUploads"></div>
+  <div id="noVideos" class="text-muted text-center d-none">You haven't uploaded any videos yet.</div>
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+
+// Redirect if no token
+if (!token) {
+  alert("Please login as a creator.");
+  location.href = "/login";
+}
+
+const user = JSON.parse(atob(token.split('.')[1]));
+if (user.role !== "creator") {
+  alert("Only creators can access this page.");
+  location.href = "/";
+}
+
+// Logout
+document.getElementById("logoutBtn").onclick = () => {
+  localStorage.removeItem("token");
+  location.href = "/";
+};
+
+// Load uploads
+$.ajax({
+  url: "/creator/my-uploads",
+  headers: { Authorization: "Bearer " + token },
+  success: function (videos) {
+    if (!videos.length) {
+      $('#noVideos').removeClass("d-none");
+    }
+
+    videos.forEach(video => {
+      $('#myUploads').append(`
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <a href="/video/${video.id}">
+              <video src="${video.url}" class="card-img-top" muted preload="metadata" style="height: 250px; object-fit: cover;"></video>
+            </a>
+            <div class="card-body">
+              <h6 class="card-title text-truncate">${video.title}</h6>
+            </div>
+          </div>
+        </div>
+      `);
+    });
+  },
+  error: function () {
+    $('#noVideos').removeClass("d-none").text("Failed to load your uploads.");
+  }
+});
+</script>
+
+</body>
+</html>

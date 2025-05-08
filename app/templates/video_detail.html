@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{ video.title }} – InstaClone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .comment-box {
+      border-top: 1px solid #ddd;
+      padding: 1rem 0;
+    }
+    .comment-box:last-child {
+      border-bottom: 1px solid #ddd;
+    }
+    video {
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+<!-- ✅ Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-3">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">📸 InstaClone</a>
+    <div class="ms-auto">
+      <a href="/dashboard" class="btn btn-outline-dark btn-sm">Dashboard</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ✅ Video and Details -->
+<div class="container mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <video controls class="w-100 mb-3" src="{{ video.url }}"></video>
+
+          <h4 class="card-title">{{ video.title }}</h4>
+          <p class="text-muted mb-1"><strong>Caption:</strong> {{ video.caption or "N/A" }}</p>
+          <p class="text-muted mb-1"><strong>Location:</strong> {{ video.location or "N/A" }}</p>
+          <p class="text-muted mb-3"><strong>People:</strong> {{ video.people or "N/A" }}</p>
+          <p><strong>Avg. Rating:</strong> {{ avg_rating }}</p>
+        </div>
+      </div>
+
+      <!-- ✅ Comments Feed -->
+      <div class="mt-4">
+        <h5 class="mb-3">💬 Comments</h5>
+        {% if comments %}
+          {% for c in comments %}
+          <div class="comment-box bg-white px-3 py-2 rounded shadow-sm mb-2">
+            <p class="mb-0">{{ c.text }}</p>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">No comments yet.</p>
+        {% endif %}
+      </div>
+
+      <p class="mt-4 text-center">
+        <a href="/dashboard" class="btn btn-outline-secondary">← Back to Dashboard</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
